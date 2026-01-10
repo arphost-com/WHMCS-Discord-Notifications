@@ -1,12 +1,7 @@
 # WHMCS Discord Notification Hook
 Want instant Discord notifications? Need to know when you've received a ticket reply without waiting for emails to give you a notification? This hook will allow just that! It's **free**, open-source and customisable - offering a range of instant notifications within your Discord server. 
 
-## Brought To You For Free By
-> ## Zare.com - Updated by arphost.com
-> 
-> With affordable prices, fast provisioning and full access to your hardware, upgrade your infrastructure and switch to Zare today.
-> 
-> [View Available Servers](https://www.zare.com)
+## Brought To You For Free By Zare.com - Updated by arphost.com
 
 ## Installation Instructions
 1. Download a free copy of this GitHub repo or release version; you should end up with a `.zip` file.
