@@ -2,8 +2,7 @@
 Want instant Discord notifications? Need to know when you've received a ticket reply without waiting for emails to give you a notification? This hook will allow just that! It's **free**, open-source and customisable - offering a range of instant notifications within your Discord server. 
 
 ## Brought To You For Free By
-> ## Zare.com - Affordable DDoS Protected Server Solutions
-> Zare offers a range of high-performance bare metal dedicated servers available across Europe; connected to a global high-capacity low-latency network and with state-of-the-art **Corero DDoS protection** included as standard, you can be certain your online presence will not be hindered by your host.
+> ## Zare.com - Updated by arphost.com
 > 
 > With affordable prices, fast provisioning and full access to your hardware, upgrade your infrastructure and switch to Zare today.
 > 
