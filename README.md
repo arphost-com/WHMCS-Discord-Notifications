@@ -44,4 +44,41 @@ Want instant Discord notifications? Need to know when you've received a ticket r
 * Network Issue Closed
 
 ### Misc Notifications
-* Cancellation Request Received 
+* Cancellation Request Received
+
+## 🔐 Security, Stability, and Best Practice Improvements
+
+The following issues were identified and resolved in  
+`includes/hooks/WHMCS-Discord-Notifications.php`.
+
+---
+
+## 🚨 Critical Security Fix
+
+### 1. SSL Certificate Verification (lines 618–619)
+SSL verification was previously disabled and has now been properly enabled:
+
+- `CURLOPT_SSL_VERIFYHOST` set to **2** (verifies the hostname matches the certificate)
+- `CURLOPT_SSL_VERIFYPEER` set to **true** (verifies the certificate chain)
+
+**Impact:**  
+This change prevents man-in-the-middle (MITM) attacks when communicating with Discord’s webhook API.
+
+---
+
+## 🛠️ Error Handling Improvements
+
+### 2. `InvoicePaid` Hook (lines 89–98)
+- Added validation for `GetInvoice` API call
+- Added validation for `GetClientsDetails` API call
+- Implemented proper logging when either API call fails
+
+---
+
+### 3. `OrderPaid` Hook (lines 277–300)
+Enhancements include:
+
+- Validation for `GetOrders` API call
+- Null check for order data:
+  ```php
+  empty($orders['orders']['order'][0])
