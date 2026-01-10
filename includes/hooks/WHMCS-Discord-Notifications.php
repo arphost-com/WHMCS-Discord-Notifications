@@ -87,8 +87,16 @@ $cancellationRequest = false;       // New Cancellation Request Received Notific
 if($invoicePaid === true):
 	add_hook('InvoicePaid', 1, function($vars)	{
 		$invoice = localAPI('GetInvoice', array('invoiceid' => $vars['invoiceid']), '');
+		if ($invoice['result'] !== 'success') {
+			logModuleCall('Discord Notifications', 'GetInvoice API Failed', $vars['invoiceid'], $invoice);
+			return;
+		}
 		$client = localAPI('GetClientsDetails', array('clientid' => $invoice['userid'], 'stats' => false), '');
-		
+		if ($client['result'] !== 'success') {
+			logModuleCall('Discord Notifications', 'GetClientsDetails API Failed', $invoice['userid'], $client);
+			return;
+		}
+
 		$dataPacket = array(
 			'content' => $GLOBALS['discordGroupID'],
 			'username' => $GLOBALS['companyName'],
@@ -267,21 +275,29 @@ if($orderPaid === true):
 			'id' => $vars['orderId'],
 		);
 		$orders = localAPI('GetOrders', $postData, '');
+		if ($orders['result'] !== 'success' || empty($orders['orders']['order'][0])) {
+			logModuleCall('Discord Notifications', 'GetOrders API Failed', $vars['orderId'], $orders);
+			return;
+		}
 		$order = $orders['orders']['order'][0];
 		// Request information about the user who placed the order
 		$postData = array(
 			'clientid' => $order['userid'],
 		);
 		$clients = localAPI('GetClientsDetails', $postData, '');
-		$client = $clients['client'];
-		$productsOrder = $order['lineitems']['lineitem'];
+		if ($clients['result'] !== 'success') {
+			logModuleCall('Discord Notifications', 'GetClientsDetails API Failed', $order['userid'], $clients);
+			return;
+		}
+		$client = isset($clients['client']) ? $clients['client'] : $clients;
+		$productsOrder = isset($order['lineitems']['lineitem']) ? $order['lineitems']['lineitem'] : array();
 		$products = '';
 		// Loop through the line items creating a comma separated string of products
 		foreach($productsOrder as $product) {
-			$products .= $product['product'] . ', ';
+			$products .= (isset($product['product']) ? $product['product'] : 'Unknown') . ', ';
 		}
 		// Remove the last comma
-		$products = substr($products, 0, -2);
+		$products = $products ? substr($products, 0, -2) : 'No products';
 		$dataPacket = array(
 			'content' => $GLOBALS['discordGroupID'],
 			'username' => $GLOBALS['companyName'],
@@ -615,8 +631,8 @@ function processNotification($dataPacket)	{
         'Content-Type: application/json'
     ));
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataPacket));
     $output = curl_exec($curl);
     $output = json_decode($output, true);
@@ -639,5 +655,3 @@ function simpleFix($value){
 	$value = iconv(mb_detect_encoding($value, mb_detect_order(), true), 'UTF-8', $value); // Allows special characters to be displayed on Discord.
 	return $value;
 }
-
-?>
