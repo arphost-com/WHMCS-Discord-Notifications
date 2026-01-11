@@ -1,0 +1,22 @@
+# Claude Code
+.claude/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHP
+vendor/
+composer.lock
+*.log
+
+# Environment
+.env
+.env.local
